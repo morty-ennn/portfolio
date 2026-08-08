@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>个人作品集 · Portfolio</title>
+<style>
+  :root{
+    --bg:#FAFAF8;
+    --ink:#1C1B1A;
+    --muted:#6B6862;
+    --faint:#A8A49B;
+    --line:#E5E2DA;
+    --card:#FFFFFF;
+    --chip-line:#D8D4CC;
+    --accent:#B4552D;
+    --code-bg:#1C1B1A;
+    --thumb:#EDEBE5;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:#F1EFEA;
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    font-size:14px;line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:"SF Mono",SFMono-Regular,Consolas,"Liberation Mono",Menlo,monospace;}
+
+  /* ===== 页面外框（对应线框中的浏览器窗口） ===== */
+  .page{
+    max-width:880px;margin:32px auto 96px;
+    background:var(--bg);
+    border:1px solid var(--chip-line);
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 8px 40px rgba(28,27,26,.06);
+  }
+
+  /* ===== 导航 ===== */
+  nav{
+    display:flex;align-items:center;gap:28px;
+    padding:18px 40px;
+    border-bottom:1px solid var(--line);
+    position:sticky;top:0;background:var(--bg);z-index:20;
+  }
+  nav .logo{font-weight:600;font-size:15px;}
+  nav .spacer{flex:1;}
+  nav a.link{color:var(--muted);text-decoration:none;font-size:13px;transition:color .15s;}
+  nav a.link:hover{color:var(--ink);}
+  .btn{
+    display:inline-block;border:none;cursor:pointer;text-decoration:none;
+    font-size:13px;line-height:1;padding:9px 18px;border-radius:999px;
+    transition:transform .12s, opacity .15s;
+  }
+  .btn:active{transform:scale(.97);}
+  .btn-dark{background:var(--ink);color:var(--bg);}
+  .btn-dark:hover{opacity:.85;}
+  .btn-ghost{background:transparent;color:var(--ink);border:1px solid #B4B2A9;}
+  .btn-ghost:hover{border-color:var(--ink);}
+
+  section{padding:36px 40px;border-bottom:1px solid var(--line);position:relative;}
+  section:last-of-type{border-bottom:none;}
+
+  /* ===== 首屏 ===== */
+  .hero{display:flex;gap:40px;align-items:flex-start;}
+  .hero-left{flex:1;min-width:0;}
+  .hero-comment{color:var(--accent);font-size:13px;margin-bottom:14px;}
+  .hero-name{font-size:30px;font-weight:600;letter-spacing:-.02em;margin-bottom:8px;}
+  .hero-role{color:var(--muted);font-size:14px;margin-bottom:12px;}
+  .hero-bio{color:var(--muted);font-size:13px;margin-bottom:22px;}
+  .hero-actions{display:flex;gap:12px;}
+  .code-card{
+    flex:0 0 340px;background:var(--code-bg);border-radius:10px;
+    padding:16px 20px 18px;color:#C8B8A2;font-size:12.5px;line-height:1.9;
+    box-shadow:0 10px 30px rgba(28,27,26,.18);
+  }
+  .code-card .dots{display:flex;gap:6px;margin-bottom:12px;}
+  .code-card .dots i{width:9px;height:9px;border-radius:50%;background:#6B6862;display:block;}
+  .code-card .k{color:#8FA8C8;}
+  .code-card .s{color:#C8A26B;}
+  .code-card pre{white-space:pre-wrap;font-family:inherit;}
+
+  /* ===== 板块标题 ===== */
+  .sec-head{display:flex;align-items:baseline;gap:10px;margin-bottom:22px;}
+  .sec-num{color:var(--accent);font-size:13px;}
+  .sec-title{font-size:18px;font-weight:600;}
+  .sec-hint{margin-left:auto;color:var(--faint);font-size:12px;}
+
+  /* ===== 技能 ===== */
+  .skill-groups{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .skill-group h4{font-size:13px;font-weight:600;margin-bottom:12px;}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{
+    position:relative;display:inline-flex;align-items:center;
+    background:var(--card);border:1px solid var(--chip-line);
+    border-radius:999px;padding:3px 13px;font-size:12.5px;
+  }
+  .chip-add{
+    border:1px dashed #B4B2A9;background:transparent;color:var(--faint);
+    border-radius:999px;padding:3px 13px;font-size:12.5px;cursor:pointer;
+  }
+  .chip-add:hover{color:var(--ink);border-color:var(--ink);}
+
+  /* ===== 作品网格 ===== */
+  .works{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  .work{
+    position:relative;display:flex;gap:16px;
+    background:var(--card);border:1px solid var(--chip-line);
+    border-radius:10px;padding:16px;
+    transition:box-shadow .18s, transform .18s;
+  }
+  .work:hover{box-shadow:0 6px 24px rgba(28,27,26,.08);transform:translateY(-2px);}
+  .work-thumb{
+    flex:0 0 96px;height:96px;border-radius:6px;background:var(--thumb);
+    display:flex;align-items:center;justify-content:center;overflow:hidden;
+  }
+  .work-thumb svg{display:block;}
+  .work-body{flex:1;min-width:0;}
+  .work-title{font-size:14px;font-weight:600;margin-bottom:4px;}
+  .work-desc{color:var(--muted);font-size:12.5px;margin-bottom:10px;}
+  .work-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+  .work-tags .chip{padding:1px 10px;font-size:11.5px;color:var(--muted);background:transparent;}
+  .work-link{color:var(--accent);font-size:12.5px;text-decoration:none;}
+  .work-link:hover{text-decoration:underline;}
+  .work.placeholder{
+    border-style:dashed;background:transparent;
+    align-items:center;justify-content:center;color:var(--faint);
+    font-size:12.5px;text-align:center;min-height:128px;flex-direction:column;gap:4px;
+  }
+  .work.placeholder:hover{box-shadow:none;transform:none;}
+  .work-add{
+    border:1px dashed #B4B2A9;background:transparent;border-radius:10px;
+    min-height:128px;color:var(--faint);font-size:13px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .work-add:hover{color:var(--ink);border-color:var(--ink);}
+
+  /* ===== 实习经历 ===== */
+  .exp-item{display:flex;gap:14px;padding:14px 0;border-bottom:1px dashed var(--line);}
+  .exp-item:last-child{border-bottom:none;}
+  .exp-date{flex:0 0 130px;color:var(--faint);font-size:12.5px;padding-top:1px;}
+  .exp-role{font-weight:600;font-size:13.5px;}
+  .exp-desc{color:var(--muted);font-size:12.5px;}
+  .exp-add{
+    border:1px dashed #B4B2A9;background:transparent;color:var(--faint);
+    border-radius:8px;padding:10px;font-size:12.5px;cursor:pointer;width:100%;
+  }
+  .exp-add:hover{color:var(--ink);border-color:var(--ink);}
+
+  /* ===== 页脚 ===== */
+  footer{padding:26px 40px;text-align:center;color:var(--faint);font-size:12.5px;}
+  footer a{color:var(--faint);text-decoration:none;}
+  footer a:hover{color:var(--ink);}
+
+  /* ===== 编辑模式 ===== */
+  .edit-only{display:none;}
+  body.editing .edit-only{display:inline-flex;}
+  body.editing .block-edit-only{display:block;}
+
+  body.editing [contenteditable]{outline:none;cursor:text;border-radius:3px;transition:box-shadow .12s;}
+  body.editing [contenteditable]:hover{box-shadow:0 0 0 1px var(--chip-line);}
+  body.editing [contenteditable]:focus{box-shadow:0 0 0 2px var(--accent);background:#fff;}
+
+  /* 板块控制条（编辑模式显示在板块右上角） */
+  .sec-tools{
+    position:absolute;top:14px;right:16px;z-index:5;
+    display:none;gap:4px;align-items:center;
+    background:#fff;border:1px solid var(--chip-line);border-radius:8px;
+    padding:3px 5px;box-shadow:0 2px 10px rgba(28,27,26,.08);
+  }
+  body.editing .sec-tools{display:flex;}
+  .sec-tools button{
+    border:none;background:transparent;cursor:pointer;font-size:12px;
+    color:var(--muted);padding:2px 7px;border-radius:5px;line-height:1.4;
+  }
+  .sec-tools button:hover{background:#F1EFEA;color:var(--ink);}
+  .sec-tools button.off{color:var(--accent);}
+
+  /* 元素删除按钮 */
+  .del-btn{
+    display:none;position:absolute;top:-8px;right:-8px;width:20px;height:20px;
+    border-radius:50%;border:none;background:var(--ink);color:#fff;
+    font-size:12px;line-height:1;cursor:pointer;z-index:6;align-items:center;justify-content:center;
+  }
+  .del-btn:hover{background:var(--accent);}
+  body.editing .chip .del-btn,
+  body.editing .work .del-btn,
+  body.editing .exp-item .del-btn{display:inline-flex;}
+  .exp-item{position:relative;}
+  body.editing .exp-item .del-btn{top:8px;right:0;}
+
+  /* 板块隐藏状态 */
+  section.section-hidden{display:none;}
+  body.editing section.section-hidden{display:block;opacity:.45;}
+
+  /* ===== 底部工具栏 ===== */
+  .toolbar{
+    position:fixed;left:50%;bottom:20px;transform:translateX(-50%);
+    display:flex;gap:6px;align-items:center;z-index:100;
+    background:var(--ink);border-radius:999px;padding:7px 10px;
+    box-shadow:0 10px 32px rgba(28,27,26,.3);
+  }
+  .toolbar button{
+    border:none;background:transparent;color:#B4B2A9;cursor:pointer;
+    font-size:12.5px;padding:6px 12px;border-radius:999px;white-space:nowrap;
+  }
+  .toolbar button:hover{color:#fff;background:rgba(255,255,255,.08);}
+  .toolbar button.primary{background:var(--accent);color:#fff;}
+  .toolbar button.primary:hover{opacity:.9;background:var(--accent);}
+  .toolbar .sep{width:1px;height:18px;background:rgba(255,255,255,.15);}
+  .toolbar label{
+    display:flex;align-items:center;gap:6px;color:#B4B2A9;font-size:12.5px;
+    padding:0 8px;cursor:pointer;
+  }
+  .toolbar input[type=color]{
+    width:22px;height:22px;border:none;border-radius:50%;padding:0;
+    background:transparent;cursor:pointer;
+  }
+  .toolbar input[type=color]::-webkit-color-swatch-wrapper{padding:0;}
+  .toolbar input[type=color]::-webkit-color-swatch{border:2px solid rgba(255,255,255,.3);border-radius:50%;}
+
+  .toast{
+    position:fixed;left:50%;bottom:78px;transform:translateX(-50%) translateY(8px);
+    background:var(--ink);color:#fff;font-size:12.5px;padding:8px 18px;border-radius:999px;
+    opacity:0;pointer-events:none;transition:opacity .2s, transform .2s;z-index:101;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  /* ===== 编辑模式扩展 ===== */
+  .skill-group{position:relative;}
+  body.editing .skill-group > .del-btn{display:inline-flex;top:-6px;right:-6px;}
+  .work-tools{
+    position:absolute;top:-9px;left:-9px;z-index:6;
+    display:none;gap:4px;
+  }
+  body.editing .work-tools{display:inline-flex;}
+  .work-tools button{
+    width:20px;height:20px;border-radius:50%;padding:0;line-height:1;
+    border:1px solid var(--chip-line);background:#fff;color:var(--muted);
+    font-size:11px;cursor:pointer;
+  }
+  .work-tools button:hover{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .work-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  body.editing .work-thumb{cursor:pointer;}
+  body.editing .work-thumb:hover{outline:2px dashed var(--accent);outline-offset:-3px;}
+  .link-edit{
+    align-items:center;justify-content:center;vertical-align:middle;
+    width:18px;height:18px;border-radius:50%;padding:0;margin-left:4px;
+    border:1px solid var(--chip-line);background:#fff;font-size:10px;cursor:pointer;
+  }
+  .link-edit:hover{border-color:var(--accent);}
+  .url-input{
+    font-size:12px;font-family:inherit;padding:3px 8px;margin-left:6px;
+    border:1px solid var(--accent);border-radius:6px;width:200px;outline:none;
+  }
+  body:not(.editing) .work.placeholder{display:none;}
+  body.editing .work.placeholder{opacity:.55;}
+
+  @media (max-width:760px){
+    .hero{flex-direction:column;}
+    .code-card{flex:none;width:100%;}
+    .skill-groups{grid-template-columns:1fr;}
+    .works{grid-template-columns:1fr;}
+    nav{padding:14px 20px;gap:16px;}
+    section{padding:28px 20px;}
+    .page{margin:12px;}
+  }
+  @media print{
+    body{background:#fff;}
+    .page{box-shadow:none;border:none;margin:0;max-width:none;}
+    .toolbar,.toast,.sec-tools,.edit-only,.block-edit-only,.del-btn,.work-tools,.url-input{display:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="page" id="page">
+<div id="app">
+
+  <!-- ===== 导航 ===== -->
+  <nav>
+    <span class="logo mono" data-editable>chenmo.dev</span>
+    <span class="spacer"></span>
+    <a class="link" href="#skills">技能</a>
+    <a class="link" href="#works">作品</a>
+    <a class="link" href="#exp">经历</a>
+    <a class="btn btn-dark resume-link" href="resume.pdf" target="_blank" rel="noopener"><span data-editable>下载简历</span></a>
+  </nav>
+
+  <!-- ===== 首屏 ===== -->
+  <section id="hero" data-section="首屏">
+    <div class="sec-tools"></div>
+    <div class="hero">
+      <div class="hero-left">
+        <div class="hero-comment mono" data-editable>// 2026 秋招 · Java 后端开发</div>
+        <h1 class="hero-name" data-editable>你好，我是 陈默</h1>
+        <div class="hero-role" data-editable>后端开发实习生 · 专注高并发与分布式系统</div>
+        <div class="hero-bio" data-editable>这里放一句话自我介绍，说明你能解决什么问题，<br>控制在两行以内，给面试官一个记住你的理由。</div>
+        <div class="hero-actions">
+          <a class="btn btn-dark" href="https://github.com" target="_blank" rel="noopener"><span data-editable>GitHub ↗</span></a>
+          <a class="btn btn-ghost resume-link" href="resume.pdf" target="_blank" rel="noopener"><span data-editable>下载简历 PDF</span></a>
+        </div>
+      </div>
+      <div class="code-card mono">
+        <div class="dots"><i></i><i></i><i></i></div>
+<pre data-editable><span style="color:#C8B8A2">class</span> <span class="k">Developer</span> {
+  <span class="k">String</span> role = <span class="s">"Java 后端"</span>;
+  <span class="k">String</span>[] stack = {
+    <span class="s">"Spring"</span>, <span class="s">"MySQL"</span>,
+    <span class="s">"Redis"</span>, <span class="s">"Kafka"</span> };
+  <span class="k">Status</span> s = HIRING;
+}</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 01 专业技能 ===== -->
+  <section id="skills" data-section="专业技能">
+    <div class="sec-tools"></div>
+    <div class="sec-head">
+      <span class="sec-num mono">01 /</span>
+      <span class="sec-title" data-editable>专业技能</span>
+      <span class="sec-hint" data-editable>按面试官的扫读习惯分组</span>
+    </div>
+    <div class="skill-groups" id="skillGroups">
+      <div class="skill-group">
+        <button class="del-btn" title="删除分组">×</button>
+        <h4 data-editable>语言与框架</h4>
+        <div class="chips">
+          <span class="chip mono"><span data-editable>Java</span><button class="del-btn" title="删除">×</button></span>
+          <span class="chip mono"><span data-editable>Spring Boot</span><button class="del-btn" title="删除">×</button></span>
+          <span class="chip mono"><span data-editable>MyBatis</span><button class="del-btn" title="删除">×</button></span>
+          <span class="chip mono"><span data-editable>JVM</span><button class="del-btn" title="删除">×</button></span>
+          <button class="chip-add edit-only">+ 添加</button>
+        </div>
+      </div>
+      <div class="skill-group">
+        <button class="del-btn" title="删除分组">×</button>
+        <h4 data-editable>存储与中间件</h4>
+        <div class="chips">
+          <span class="chip mono"><span data-editable>MySQL</span><button class="del-btn" title="删除">×</button></span>
+          <span class="chip mono"><span data-editable>Redis</span><button class="del-btn" title="删除">×</button></span>
+          <span class="chip mono"><span data-editable>Kafka</span><button class="del-btn" title="删除">×</button></span>
+          <span class="chip mono"><span data-editable>ES</span><button class="del-btn" title="删除">×</button></span>
+          <button class="chip-add edit-only">+ 添加</button>
+        </div>
+      </div>
+      <div class="skill-group">
+        <button class="del-btn" title="删除分组">×</button>
+        <h4 data-editable>工程与部署</h4>
+        <div class="chips">
+          <span class="chip mono"><span data-editable>Docker</span><button class="del-btn" title="删除">×</button></span>
+          <span class="chip mono"><span data-editable>Linux</span><button class="del-btn" title="删除">×</button></span>
+          <span class="chip mono"><span data-editable>Git</span><button class="del-btn" title="删除">×</button></span>
+          <span class="chip mono"><span data-editable>CI/CD</span><button class="del-btn" title="删除">×</button></span>
+          <button class="chip-add edit-only">+ 添加</button>
+        </div>
+      </div>
+    </div>
+    <button class="exp-add edit-only" id="addGroupBtn" style="display:none;margin-top:16px;">+ 添加分组</button>
+  </section>
+
+  <!-- ===== 02 作品 ===== -->
+  <section id="works" data-section="Vibe Coding 作品">
+    <div class="sec-tools"></div>
+    <div class="sec-head">
+      <span class="sec-num mono">02 /</span>
+      <span class="sec-title" data-editable>Vibe Coding 作品</span>
+      <span class="sec-hint" data-editable>截图 + 一句话 + AI 工作流标签 + 链接</span>
+    </div>
+    <div class="works" id="worksGrid">
+      <div class="work">
+        <button class="del-btn" title="删除">×</button>
+        <span class="work-tools"><button data-dir="-1" title="左移">‹</button><button data-dir="1" title="右移">›</button></span>
+        <div class="work-thumb">
+          <svg width="64" height="64" viewBox="0 0 64 64"><rect x="8" y="34" width="12" height="22" fill="#C9C4B8"/><rect x="26" y="20" width="12" height="36" fill="#B4552D"/><rect x="44" y="42" width="12" height="14" fill="#C9C4B8"/></svg>
+        </div>
+        <div class="work-body">
+          <div class="work-title" data-editable>作品 A · 数据看板</div>
+          <div class="work-desc" data-editable>一句话说清楚它做什么</div>
+          <div class="work-tags">
+            <span class="chip mono"><span data-editable>Vue</span><button class="del-btn" title="删除">×</button></span>
+            <span class="chip mono"><span data-editable>AI 工作流</span><button class="del-btn" title="删除">×</button></span>
+            <button class="chip-add edit-only">+</button>
+          </div>
+          <a class="work-link mono" href="https://github.com" target="_blank" rel="noopener"><span data-editable>GitHub ↗</span></a>
+        </div>
+      </div>
+      <div class="work">
+        <button class="del-btn" title="删除">×</button>
+        <span class="work-tools"><button data-dir="-1" title="左移">‹</button><button data-dir="1" title="右移">›</button></span>
+        <div class="work-thumb">
+          <svg width="64" height="64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="20" fill="none" stroke="#B4552D" stroke-width="3"/><circle cx="32" cy="32" r="8" fill="#C9C4B8"/></svg>
+        </div>
+        <div class="work-body">
+          <div class="work-title" data-editable>作品 B · 小工具</div>
+          <div class="work-desc" data-editable>解决了什么具体问题</div>
+          <div class="work-tags">
+            <span class="chip mono"><span data-editable>React</span><button class="del-btn" title="删除">×</button></span>
+            <span class="chip mono"><span data-editable>AI 工作流</span><button class="del-btn" title="删除">×</button></span>
+            <button class="chip-add edit-only">+</button>
+          </div>
+          <a class="work-link mono" href="https://github.com" target="_blank" rel="noopener"><span data-editable>GitHub ↗</span></a>
+        </div>
+      </div>
+      <div class="work">
+        <button class="del-btn" title="删除">×</button>
+        <span class="work-tools"><button data-dir="-1" title="左移">‹</button><button data-dir="1" title="右移">›</button></span>
+        <div class="work-thumb">
+          <svg width="64" height="64" viewBox="0 0 64 64"><rect x="10" y="12" width="44" height="6" rx="3" fill="#C9C4B8"/><rect x="10" y="28" width="30" height="6" rx="3" fill="#B4552D"/><rect x="10" y="44" width="38" height="6" rx="3" fill="#C9C4B8"/></svg>
+        </div>
+        <div class="work-body">
+          <div class="work-title" data-editable>作品 C · 小应用</div>
+          <div class="work-desc" data-editable>突出交互或创意亮点</div>
+          <div class="work-tags">
+            <span class="chip mono"><span data-editable>TS</span><button class="del-btn" title="删除">×</button></span>
+            <span class="chip mono"><span data-editable>AI 工作流</span><button class="del-btn" title="删除">×</button></span>
+            <button class="chip-add edit-only">+</button>
+          </div>
+          <a class="work-link mono" href="https://github.com" target="_blank" rel="noopener"><span data-editable>GitHub ↗</span></a>
+        </div>
+      </div>
+      <div class="work placeholder">
+        <button class="del-btn" title="删除">×</button>
+        <span data-editable>占位提示：仅编辑模式可见</span>
+        <span data-editable>点下方「+ 添加作品」放最有完成度的一个</span>
+      </div>
+      <button class="work-add edit-only" id="addWorkBtn" style="display:none;">+ 添加作品</button>
+    </div>
+  </section>
+
+  <!-- ===== 03 实习经历（可选） ===== -->
+  <section id="exp" data-section="实习经历">
+    <div class="sec-tools"></div>
+    <div class="sec-head">
+      <span class="sec-num mono">03 /</span>
+      <span class="sec-title" data-editable>实习经历（可选板块）</span>
+      <span class="sec-hint" data-editable>一行讲清你负责什么、产出什么</span>
+    </div>
+    <div id="expList">
+      <div class="exp-item">
+        <button class="del-btn" title="删除">×</button>
+        <div class="exp-date mono" data-editable>2025.06 – 至今</div>
+        <div>
+          <div class="exp-role" data-editable>XX 科技 · 后端开发实习生</div>
+          <div class="exp-desc" data-editable>一行讲清你负责什么、产出什么</div>
+        </div>
+      </div>
+    </div>
+    <button class="exp-add edit-only" id="addExpBtn" style="display:none;margin-top:12px;">+ 添加经历</button>
+  </section>
+
+  <!-- ===== 页脚 ===== -->
+  <footer>
+    <span data-editable>© 2026 陈默 · hi@chenmo.dev · </span><a href="https://github.com" target="_blank" rel="noopener">GitHub</a><span data-editable> · </span><a href="#hero">回到顶部</a>
+  </footer>
+
+</div>
+</div>
+
+<!-- ===== 编辑工具栏 ===== -->
+<div class="toolbar" id="toolbar">
+  <button class="primary" id="editToggle">✎ 编辑</button>
+  <span class="sep edit-only"></span>
+  <label class="edit-only">主题色 <input type="color" id="accentPicker" value="#B4552D"></label>
+  <button class="edit-only" id="exportBtn">导出 HTML</button>
+  <button class="edit-only" id="resetBtn">恢复默认</button>
+  <button class="edit-only" id="doneBtn" style="color:#fff;">完成 ✓</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  'use strict';
+  var STORAGE_KEY = 'portfolio_state_v1';
+  var DEFAULT_HTML = document.getElementById('app').innerHTML;
+  var DEFAULT_ACCENT = '#B4552D';
+  var app = document.getElementById('app');
+  var editing = false;
+  var saveTimer = null;
+
+  /* ---------- 提示 ---------- */
+  var toastEl = document.getElementById('toast');
+  var toastTimer = null;
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toastEl.classList.remove('show'); }, 1800);
+  }
+
+  /* ---------- 板块控制条 ---------- */
+  function buildSectionTools(){
+    app.querySelectorAll('section[data-section]').forEach(function(sec){
+      var tools = sec.querySelector(':scope > .sec-tools');
+      if(!tools) return;
+      tools.innerHTML = '';
+      var name = sec.getAttribute('data-section');
+
+      var btnUp = mkBtn('↑', '上移板块', function(){ moveSection(sec, -1); });
+      var btnDown = mkBtn('↓', '下移板块', function(){ moveSection(sec, 1); });
+      var btnHide = mkBtn(sec.classList.contains('section-hidden') ? '显示' : '隐藏',
+        '显示/隐藏「' + name + '」', function(){
+          sec.classList.toggle('section-hidden');
+          btnHide.textContent = sec.classList.contains('section-hidden') ? '显示' : '隐藏';
+          btnHide.classList.toggle('off', sec.classList.contains('section-hidden'));
+          scheduleSave();
+        });
+      btnHide.classList.toggle('off', sec.classList.contains('section-hidden'));
+
+      var label = document.createElement('span');
+      label.style.cssText = 'font-size:11px;color:#A8A49B;padding:0 4px;';
+      label.textContent = name;
+
+      tools.appendChild(label);
+      tools.appendChild(btnUp);
+      tools.appendChild(btnDown);
+      tools.appendChild(btnHide);
+    });
+  }
+  function mkBtn(text, title, fn){
+    var b = document.createElement('button');
+    b.type = 'button'; b.textContent = text; b.title = title;
+    b.addEventListener('click', function(e){ e.stopPropagation(); fn(); });
+    return b;
+  }
+  function moveSection(sec, dir){
+    var sections = Array.prototype.slice.call(app.querySelectorAll('section[data-section]'));
+    var idx = sections.indexOf(sec);
+    var target = idx + dir;
+    if(target < 0 || target >= sections.length) { toast('已经在' + (dir<0?'最前':'最后') + '了'); return; }
+    var other = sections[target];
+    if(dir < 0){ app.insertBefore(sec, other); }
+    else { app.insertBefore(other, sec); }
+    renumberSections();
+    scheduleSave();
+    toast('已移动「' + sec.getAttribute('data-section') + '」');
+  }
+  function renumberSections(){
+    var n = 0;
+    app.querySelectorAll('section[data-section]').forEach(function(sec){
+      var num = sec.querySelector('.sec-num');
+      if(num){ n++; num.textContent = '0' + n + ' /'; }
+    });
+  }
+
+  /* ---------- 事件委托：删除 / 添加 ---------- */
+  app.addEventListener('click', function(e){
+    if(!editing) return;
+    var t = e.target;
+
+    // 作品排序（左移 / 右移）
+    var mv = t.closest ? t.closest('.work-tools button') : null;
+    if(mv){
+      e.preventDefault(); e.stopPropagation();
+      moveWork(mv.closest('.work'), parseInt(mv.getAttribute('data-dir'), 10));
+      return;
+    }
+    // 编辑链接地址
+    var le = t.closest ? t.closest('.link-edit') : null;
+    if(le){
+      e.preventDefault(); e.stopPropagation();
+      openUrlEditor(le);
+      return;
+    }
+    // 更换作品缩略图
+    var th = t.closest ? t.closest('.work-thumb') : null;
+    if(th){
+      e.preventDefault();
+      pickImage(th);
+      return;
+    }
+    // 删除元素（技能标签 / 作品卡 / 经历条目 / 技能分组）
+    if(t.classList && t.classList.contains('del-btn')){
+      e.preventDefault(); e.stopPropagation();
+      var host = t.closest('.chip') || t.closest('.work') || t.closest('.exp-item') || t.closest('.skill-group');
+      if(host){ host.remove(); scheduleSave(); toast('已删除'); }
+      return;
+    }
+    // 添加技能/作品标签
+    if(t.classList && t.classList.contains('chip-add')){
+      e.preventDefault();
+      var chip = makeChip('新技能');
+      t.parentNode.insertBefore(chip, t);
+      setEditable(true);
+      scheduleSave();
+      editFocus(chip.querySelector('[data-editable]'));
+      return;
+    }
+    // 添加技能分组
+    if(t.id === 'addGroupBtn'){
+      e.preventDefault();
+      document.getElementById('skillGroups').appendChild(makeGroup());
+      setEditable(true);
+      scheduleSave(); toast('已添加分组，组名可直接点击修改');
+      return;
+    }
+    // 添加作品
+    if(t.id === 'addWorkBtn'){
+      e.preventDefault();
+      t.parentNode.insertBefore(makeWork(), t);
+      addLinkBadges(); setEditable(true);
+      scheduleSave(); toast('已添加作品卡片');
+      return;
+    }
+    // 添加经历
+    if(t.id === 'addExpBtn'){
+      e.preventDefault();
+      document.getElementById('expList').appendChild(makeExp());
+      setEditable(true);
+      scheduleSave(); toast('已添加经历');
+      return;
+    }
+    // 编辑模式下链接不跳转
+    if(t.closest('a')){ e.preventDefault(); }
+  });
+
+  function makeChip(text){
+    var chip = document.createElement('span');
+    chip.className = 'chip mono';
+    chip.innerHTML = '<span data-editable></span><button class="del-btn" title="删除">×</button>';
+    chip.querySelector('[data-editable]').textContent = text;
+    return chip;
+  }
+  function makeWork(){
+    var d = document.createElement('div');
+    d.className = 'work';
+    d.innerHTML =
+      '<button class="del-btn" title="删除">×</button>' +
+      '<span class="work-tools"><button data-dir="-1" title="左移">‹</button><button data-dir="1" title="右移">›</button></span>' +
+      '<div class="work-thumb"><svg width="64" height="64" viewBox="0 0 64 64"><rect x="8" y="34" width="12" height="22" fill="#C9C4B8"/><rect x="26" y="20" width="12" height="36" fill="#B4552D"/><rect x="44" y="42" width="12" height="14" fill="#C9C4B8"/></svg></div>' +
+      '<div class="work-body">' +
+      '<div class="work-title" data-editable>新作品</div>' +
+      '<div class="work-desc" data-editable>一句话介绍这个作品</div>' +
+      '<div class="work-tags"><span class="chip mono"><span data-editable>标签</span><button class="del-btn" title="删除">×</button></span><button class="chip-add edit-only">+</button></div>' +
+      '<a class="work-link mono" href="https://github.com" target="_blank" rel="noopener"><span data-editable>GitHub ↗</span></a>' +
+      '</div>';
+    return d;
+  }
+  function makeExp(){
+    var d = document.createElement('div');
+    d.className = 'exp-item';
+    d.innerHTML =
+      '<button class="del-btn" title="删除">×</button>' +
+      '<div class="exp-date mono" data-editable>2025.01 – 2025.06</div>' +
+      '<div><div class="exp-role" data-editable>公司 · 岗位</div>' +
+      '<div class="exp-desc" data-editable>负责什么、产出什么</div></div>';
+    return d;
+  }
+  function makeGroup(){
+    var g = document.createElement('div');
+    g.className = 'skill-group';
+    g.innerHTML =
+      '<button class="del-btn" title="删除分组">×</button>' +
+      '<h4 data-editable>新分组</h4>' +
+      '<div class="chips">' +
+      '<span class="chip mono"><span data-editable>新技能</span><button class="del-btn" title="删除">×</button></span>' +
+      '<button class="chip-add edit-only">+ 添加</button>' +
+      '</div>';
+    return g;
+  }
+  function moveWork(card, dir){
+    if(!card) return;
+    var grid = card.parentNode;
+    var sib = dir < 0 ? card.previousElementSibling : card.nextElementSibling;
+    while(sib && !(sib.classList && sib.classList.contains('work'))){
+      sib = dir < 0 ? sib.previousElementSibling : sib.nextElementSibling;
+    }
+    if(!sib){ toast(dir < 0 ? '已经在最前了' : '已经在最后了'); return; }
+    if(dir < 0){ grid.insertBefore(card, sib); } else { grid.insertBefore(sib, card); }
+    scheduleSave();
+  }
+  /* 链接地址编辑（内联输入框，不依赖 prompt） */
+  function openUrlEditor(badge){
+    if(badge.nextElementSibling && badge.nextElementSibling.classList.contains('url-input')) return;
+    var link = badge.previousElementSibling;
+    if(!link || link.tagName !== 'A') return;
+    var input = document.createElement('input');
+    input.className = 'url-input';
+    input.value = link.getAttribute('href') || '';
+    input.placeholder = link.classList.contains('resume-link')
+      ? '粘贴简历下载链接（OSS / 网盘直链），回车确认'
+      : '输入链接地址，回车确认';
+    badge.parentNode.insertBefore(input, badge.nextSibling);
+    input.focus(); input.select();
+    var done = false;
+    function commit(saveIt){
+      if(done) return; done = true;
+      var v = input.value.trim();
+      if(saveIt && v){ link.setAttribute('href', v); refreshResumeLinks(); scheduleSave(); toast('链接已更新'); }
+      input.remove();
+    }
+    input.addEventListener('keydown', function(ev){
+      if(ev.key === 'Enter'){ ev.preventDefault(); commit(true); }
+      if(ev.key === 'Escape'){ commit(false); }
+    });
+    input.addEventListener('blur', function(){ commit(true); });
+  }
+  /* 为所有站外链接追加编辑徽标（锚点链接除外） */
+  function addLinkBadges(){
+    app.querySelectorAll('a[href]').forEach(function(a){
+      var href = a.getAttribute('href') || '';
+      if(href.charAt(0) === '#') return;
+      var next = a.nextElementSibling;
+      if(next && next.classList && (next.classList.contains('link-edit') || next.classList.contains('url-input'))) return;
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'link-edit edit-only';
+      b.title = '编辑链接地址';
+      b.textContent = '🔗';
+      a.parentNode.insertBefore(b, a.nextSibling);
+    });
+  }
+  /* 简历下载链接：PDF 直链自动加 download 属性（同源时生效，跨域由服务端 Content-Disposition 决定） */
+  function refreshResumeLinks(){
+    app.querySelectorAll('a.resume-link').forEach(function(a){
+      var h = a.getAttribute('href') || '';
+      if(/\.pdf($|[?#])/i.test(h) || h.indexOf('data:application/pdf') === 0){
+        a.setAttribute('download', '简历.pdf');
+      } else {
+        a.removeAttribute('download');
+      }
+    });
+  }
+  /* 缩略图换图 */
+  var fileInput = document.createElement('input');
+  fileInput.type = 'file';
+  fileInput.accept = 'image/*';
+  fileInput.style.display = 'none';
+  document.body.appendChild(fileInput);
+  var thumbTarget = null;
+  fileInput.addEventListener('change', function(){
+    var f = fileInput.files && fileInput.files[0];
+    fileInput.value = '';
+    if(!f || !thumbTarget) return;
+    if(f.size > 2 * 1024 * 1024){ toast('图片超过 2MB，请压缩后再试'); return; }
+    var reader = new FileReader();
+    reader.onload = function(){
+      thumbTarget.innerHTML = '<img src="' + reader.result + '" alt="作品截图">';
+      scheduleSave(); toast('图片已更新');
+    };
+    reader.readAsDataURL(f);
+  });
+  function pickImage(th){
+    thumbTarget = th;
+    fileInput.click();
+  }
+  /* 旧版本存档升级：补齐新增控件 */
+  function upgradeDom(){
+    app.querySelectorAll('.skill-group').forEach(function(g){
+      if(!g.querySelector(':scope > .del-btn')){
+        var b = document.createElement('button');
+        b.className = 'del-btn'; b.title = '删除分组'; b.textContent = '×';
+        g.insertBefore(b, g.firstChild);
+      }
+    });
+    app.querySelectorAll('.work').forEach(function(w){
+      if(!w.querySelector(':scope > .work-tools')){
+        var s = document.createElement('span');
+        s.className = 'work-tools';
+        s.innerHTML = '<button data-dir="-1" title="左移">‹</button><button data-dir="1" title="右移">›</button>';
+        var del = w.querySelector(':scope > .del-btn');
+        w.insertBefore(s, del ? del.nextSibling : w.firstChild);
+      }
+    });
+    var ph = app.querySelector('.work.placeholder');
+    if(ph && !ph.querySelector('.del-btn')){
+      var pb = document.createElement('button');
+      pb.className = 'del-btn'; pb.title = '删除'; pb.textContent = '×';
+      ph.insertBefore(pb, ph.firstChild);
+    }
+    if(!document.getElementById('addGroupBtn')){
+      var sg = document.getElementById('skillGroups');
+      if(sg){
+        var gb = document.createElement('button');
+        gb.className = 'exp-add edit-only'; gb.id = 'addGroupBtn';
+        gb.style.display = 'none'; gb.style.marginTop = '16px';
+        gb.textContent = '+ 添加分组';
+        sg.parentNode.insertBefore(gb, sg.nextSibling);
+      }
+    }
+    // 旧存档的简历链接补齐可配置下载形式
+    app.querySelectorAll('a[href="resume.pdf"]').forEach(function(a){
+      if(!a.classList.contains('resume-link')){
+        a.classList.add('resume-link');
+        a.setAttribute('target', '_blank');
+        a.setAttribute('rel', 'noopener');
+      }
+    });
+  }
+  function editFocus(el){
+    if(!el) return;
+    el.focus();
+    if(window.getSelection){
+      var range = document.createRange();
+      range.selectNodeContents(el);
+      var sel = window.getSelection();
+      sel.removeAllRanges(); sel.addRange(range);
+    }
+  }
+
+  /* ---------- contenteditable 开关 ---------- */
+  function setEditable(on){
+    app.querySelectorAll('[data-editable]').forEach(function(el){
+      if(on){ el.setAttribute('contenteditable', 'true'); el.setAttribute('spellcheck','false'); }
+      else { el.removeAttribute('contenteditable'); }
+    });
+  }
+
+  /* ---------- 编辑模式切换 ---------- */
+  var editToggle = document.getElementById('editToggle');
+  var doneBtn = document.getElementById('doneBtn');
+  function enterEdit(){
+    editing = true;
+    document.body.classList.add('editing');
+    setEditable(true);
+    buildSectionTools();
+    addLinkBadges();
+    showEditOnly(true);
+    toast('编辑模式：点击任意文字直接修改');
+  }
+  function exitEdit(){
+    editing = false;
+    document.body.classList.remove('editing');
+    setEditable(false);
+    showEditOnly(false);
+    save();
+    toast('已保存');
+  }
+  function showEditOnly(on){
+    document.querySelectorAll('.toolbar .edit-only').forEach(function(el){
+      el.style.display = on ? '' : 'none';
+    });
+    document.querySelectorAll('.toolbar .sep').forEach(function(el){
+      el.style.display = on ? '' : 'none';
+    });
+    // 板块内的添加按钮
+    app.querySelectorAll('.chip-add, #addWorkBtn, #addExpBtn, #addGroupBtn').forEach(function(el){
+      el.style.display = on ? '' : 'none';
+    });
+    editToggle.style.display = on ? 'none' : '';
+  }
+  editToggle.addEventListener('click', enterEdit);
+  doneBtn.addEventListener('click', exitEdit);
+
+  /* ---------- 主题色 ---------- */
+  var picker = document.getElementById('accentPicker');
+  picker.addEventListener('input', function(){
+    document.documentElement.style.setProperty('--accent', picker.value);
+    scheduleSave();
+  });
+
+  /* ---------- 保存 / 恢复 ---------- */
+  function scheduleSave(){
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(save, 600);
+  }
+  function save(){
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        html: app.innerHTML,
+        accent: document.documentElement.style.getPropertyValue('--accent') || picker.value
+      }));
+    }catch(err){ /* 隐私模式等场景忽略 */ }
+  }
+  function restore(){
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return false;
+      var state = JSON.parse(raw);
+      if(state && state.html){
+        app.innerHTML = state.html;
+        if(state.accent){
+          document.documentElement.style.setProperty('--accent', state.accent);
+          picker.value = state.accent;
+        }
+        return true;
+      }
+    }catch(err){}
+    return false;
+  }
+  document.getElementById('resetBtn').addEventListener('click', function(){
+    if(!confirm('确定恢复为初始模板吗？当前修改会被清空。')) return;
+    localStorage.removeItem(STORAGE_KEY);
+    app.innerHTML = DEFAULT_HTML;
+    document.documentElement.style.setProperty('--accent', DEFAULT_ACCENT);
+    picker.value = DEFAULT_ACCENT;
+    buildSectionTools();
+    addLinkBadges();
+    showEditOnly(true);
+    setEditable(true);
+    toast('已恢复默认模板');
+  });
+
+  // 内容变化自动保存
+  app.addEventListener('input', function(){ if(editing) scheduleSave(); });
+
+  /* ---------- 导出 HTML ---------- */
+  document.getElementById('exportBtn').addEventListener('click', function(){
+    save();
+    var clone = document.documentElement.cloneNode(true);
+    // 移除编辑态
+    clone.querySelectorAll('[contenteditable]').forEach(function(el){ el.removeAttribute('contenteditable'); });
+    clone.querySelectorAll('.del-btn, .sec-tools, .chip-add, #addWorkBtn, #addExpBtn, #addGroupBtn, .toast, .link-edit, .url-input, .work-tools, .work.placeholder').forEach(function(el){ el.remove(); });
+    clone.querySelectorAll('section.section-hidden').forEach(function(el){ el.remove(); });
+    var body = clone.querySelector('body');
+    if(body) body.classList.remove('editing');
+    var html = '<!DOCTYPE html>\n' + clone.outerHTML;
+    var blob = new Blob([html], {type:'text/html;charset=utf-8'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'portfolio.html';
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+    toast('已导出 portfolio.html（仍可在其中继续编辑）');
+  });
+
+  /* ---------- 初始化 ---------- */
+  var had = restore();
+  upgradeDom();
+  buildSectionTools();
+  addLinkBadges();
+  refreshResumeLinks();
+  showEditOnly(false);
+  if(had) setTimeout(function(){ toast('已载入你上次保存的内容'); }, 400);
+})();
+</script>
+</body>
+</html>
