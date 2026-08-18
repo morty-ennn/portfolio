@@ -21,7 +21,9 @@
   *{margin:0;padding:0;box-sizing:border-box;}
   html{scroll-behavior:smooth;}
   body{
-    background:#F1EFEA;
+    background-color:var(--bg);
+    background-image:radial-gradient(circle, var(--dot) 1.1px, transparent 1.2px);
+    background-size:16px 16px;
     color:var(--ink);
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
     font-size:14px;line-height:1.7;
@@ -32,16 +34,14 @@
   /* ===== 页面外框（对应线框中的浏览器窗口） ===== */
   .page{
     max-width:880px;margin:32px auto 96px;
-    background-color:var(--bg);
-    background-image:radial-gradient(circle, var(--dot) 1.1px, transparent 1.2px);
-    background-size:16px 16px;
+    background:var(--card);
     border:1px solid var(--chip-line);
     border-radius:14px;
     overflow:hidden;
     box-shadow:0 8px 40px rgba(28,27,26,.06);
   }
 
-  /* ===== 方案 A 点阵纹理（已并入 .page 背景） ===== */
+  /* ===== 方案 A 点阵纹理（在 body 背景上，突出主体卡片） ===== */
 
   /* ===== 方案 D 双侧边注 ===== */
   .side-notes{
@@ -68,7 +68,7 @@
     display:flex;align-items:center;gap:28px;
     padding:18px 40px;
     border-bottom:1px solid var(--line);
-    position:sticky;top:0;background:var(--bg);z-index:20;
+    position:sticky;top:0;background:var(--card);z-index:20;
   }
   nav .logo{font-weight:600;font-size:15px;}
   nav .spacer{flex:1;}
@@ -355,7 +355,7 @@
   }
   @media print{
     body{background:#fff;}
-    .page{box-shadow:none;border:none;margin:0;max-width:none;background-image:none;}
+    .page{box-shadow:none;border:none;margin:0;max-width:none;}
     .toolbar,.toast,.sec-tools,.edit-only,.block-edit-only,.del-btn,.work-tools,.url-input,.modal,.side-notes{display:none !important;}
   }
 </style>
