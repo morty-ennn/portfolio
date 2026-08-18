@@ -16,6 +16,7 @@
     --accent:#B4552D;
     --code-bg:#1C1B1A;
     --thumb:#EDEBE5;
+    --dot:#D8D4CC;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
   html{scroll-behavior:smooth;}
@@ -31,12 +32,36 @@
   /* ===== 页面外框（对应线框中的浏览器窗口） ===== */
   .page{
     max-width:880px;margin:32px auto 96px;
-    background:var(--bg);
+    background-color:var(--bg);
+    background-image:radial-gradient(circle, var(--dot) 1.1px, transparent 1.2px);
+    background-size:16px 16px;
     border:1px solid var(--chip-line);
     border-radius:14px;
     overflow:hidden;
     box-shadow:0 8px 40px rgba(28,27,26,.06);
   }
+
+  /* ===== 方案 A 点阵纹理（已并入 .page 背景） ===== */
+
+  /* ===== 方案 D 双侧边注 ===== */
+  .side-notes{
+    position:fixed;top:0;left:0;right:0;bottom:0;z-index:2;
+    pointer-events:none;
+  }
+  .side-note{
+    position:absolute;top:50%;
+    color:var(--faint);font-size:11px;letter-spacing:.22em;
+    font-family:"SF Mono",SFMono-Regular,Consolas,Menlo,monospace;
+    white-space:nowrap;text-transform:uppercase;
+  }
+  .side-left{
+    left:14px;transform:translateY(-50%) rotate(-90deg);transform-origin:left center;
+  }
+  .side-right{
+    right:14px;transform:translateY(-50%) rotate(90deg);transform-origin:right center;
+  }
+  body.editing .side-notes{pointer-events:none;}
+  body.editing .side-note{pointer-events:auto;cursor:text;}
 
   /* ===== 导航 ===== */
   nav{
@@ -313,6 +338,10 @@
   body.editing .wd-block > .del-btn,
   body.editing .wd-img .del-btn{display:inline-flex;}
 
+  /* 视口不够宽时隐藏侧边注，避免与正重叠 */
+  @media (max-width:1040px){
+    .side-notes{display:none;}
+  }
   @media (max-width:760px){
     .hero{flex-direction:column;}
     .code-card{flex:none;width:100%;}
@@ -326,12 +355,17 @@
   }
   @media print{
     body{background:#fff;}
-    .page{box-shadow:none;border:none;margin:0;max-width:none;}
-    .toolbar,.toast,.sec-tools,.edit-only,.block-edit-only,.del-btn,.work-tools,.url-input,.modal{display:none !important;}
+    .page{box-shadow:none;border:none;margin:0;max-width:none;background-image:none;}
+    .toolbar,.toast,.sec-tools,.edit-only,.block-edit-only,.del-btn,.work-tools,.url-input,.modal,.side-notes{display:none !important;}
   }
 </style>
 </head>
 <body>
+
+<div class="side-notes" aria-hidden="true">
+  <span class="side-note side-left mono" data-editable>BACKEND · 2026</span>
+  <span class="side-note side-right mono" data-editable>SCROLL ↓</span>
+</div>
 
 <div class="page" id="page">
 <div id="app">
