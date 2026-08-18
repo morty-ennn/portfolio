@@ -43,7 +43,7 @@
 
   /* ===== 方案 A 点阵纹理（在 body 背景上，突出主体卡片） ===== */
 
-  /* ===== 方案 D 双侧边注 ===== */
+  /* ===== 方案 D 双侧边注（贴着主体卡片，而非屏幕边缘） ===== */
   .side-notes{
     position:fixed;top:0;left:0;right:0;bottom:0;z-index:2;
     pointer-events:none;
@@ -54,11 +54,12 @@
     font-family:"SF Mono",SFMono-Regular,Consolas,Menlo,monospace;
     white-space:nowrap;text-transform:uppercase;
   }
+  /* 主体 .page 宽 880px，左右各留 40px 间距 */
   .side-left{
-    left:14px;transform:translateY(-50%) rotate(-90deg);transform-origin:left center;
+    left:calc(50% - 440px - 40px);transform:translateY(-50%) rotate(-90deg);transform-origin:left center;
   }
   .side-right{
-    right:14px;transform:translateY(-50%) rotate(90deg);transform-origin:right center;
+    left:calc(50% + 440px + 40px);transform:translateY(-50%) rotate(90deg);transform-origin:left center;
   }
   body.editing .side-notes{pointer-events:none;}
   body.editing .side-note{pointer-events:auto;cursor:text;}
