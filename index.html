@@ -258,6 +258,61 @@
   body:not(.editing) .work.placeholder{display:none;}
   body.editing .work.placeholder{opacity:.55;}
 
+  /* ===== 作品详情弹层 ===== */
+  body:not(.editing) .work:not(.placeholder){cursor:pointer;}
+  .work-detail{display:none;}
+  .work-detail-link{color:var(--accent);font-size:12.5px;cursor:pointer;margin-left:12px;white-space:nowrap;}
+  .work-detail-link:hover{text-decoration:underline;}
+  .modal{position:fixed;inset:0;z-index:200;display:none;}
+  .modal.open{display:block;}
+  .modal-mask{position:absolute;inset:0;background:rgba(28,27,26,.45);}
+  .modal-panel{
+    position:relative;max-width:720px;margin:48px auto 0;background:var(--bg);
+    border-radius:14px;max-height:calc(100vh - 80px);display:flex;flex-direction:column;
+    box-shadow:0 24px 80px rgba(28,27,26,.3);
+  }
+  .modal-head{display:flex;align-items:center;gap:12px;padding:15px 24px;border-bottom:1px solid var(--line);flex:none;}
+  .modal-title{font-size:15px;font-weight:600;}
+  .modal-close{
+    margin-left:auto;width:30px;height:30px;border-radius:50%;line-height:1;
+    border:1px solid var(--chip-line);background:#fff;color:var(--muted);font-size:15px;cursor:pointer;
+  }
+  .modal-close:hover{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .modal-body{padding:20px 24px 28px;overflow-y:auto;}
+  .wd-block{
+    position:relative;background:#fff;border:1px solid var(--line);
+    border-radius:10px;padding:16px 18px;margin-bottom:14px;
+  }
+  .wd-block h3{font-size:13.5px;font-weight:600;margin-bottom:6px;padding-left:10px;border-left:3px solid var(--accent);}
+  .wd-text{color:var(--muted);font-size:13px;line-height:1.8;white-space:pre-wrap;}
+  .wd-imgs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
+  body:not(.editing) .wd-imgs:not(:has(.wd-img)){display:none;}
+  .wd-img{position:relative;border-radius:8px;overflow:hidden;border:1px solid var(--line);background:var(--thumb);}
+  .wd-img img{width:100%;display:block;}
+  body.editing .wd-img{cursor:pointer;}
+  body.editing .wd-img:hover{outline:2px dashed var(--accent);outline-offset:-3px;}
+  .wd-add-img{
+    border:1px dashed #B4B2A9;background:transparent;color:var(--faint);
+    border-radius:8px;min-height:64px;font-size:12.5px;cursor:pointer;
+    align-items:center;justify-content:center;
+  }
+  .wd-add-img:hover{color:var(--ink);border-color:var(--ink);}
+  .wd-add-block{
+    border:1px dashed #B4B2A9;background:transparent;color:var(--faint);
+    border-radius:8px;padding:10px;font-size:12.5px;cursor:pointer;width:100%;
+    align-items:center;justify-content:center;
+  }
+  .wd-add-block:hover{color:var(--ink);border-color:var(--ink);}
+  .wd-tools{position:absolute;top:8px;right:34px;display:none;gap:4px;}
+  body.editing .wd-tools{display:inline-flex;}
+  .wd-tools button{
+    width:20px;height:20px;border-radius:50%;padding:0;line-height:1;
+    border:1px solid var(--chip-line);background:#fff;color:var(--muted);font-size:11px;cursor:pointer;
+  }
+  .wd-tools button:hover{background:var(--ink);color:#fff;border-color:var(--ink);}
+  body.editing .wd-block > .del-btn,
+  body.editing .wd-img .del-btn{display:inline-flex;}
+
   @media (max-width:760px){
     .hero{flex-direction:column;}
     .code-card{flex:none;width:100%;}
@@ -266,11 +321,13 @@
     nav{padding:14px 20px;gap:16px;}
     section{padding:28px 20px;}
     .page{margin:12px;}
+    .modal-panel{margin:12px;max-height:calc(100vh - 24px);}
+    .wd-imgs{grid-template-columns:1fr;}
   }
   @media print{
     body{background:#fff;}
     .page{box-shadow:none;border:none;margin:0;max-width:none;}
-    .toolbar,.toast,.sec-tools,.edit-only,.block-edit-only,.del-btn,.work-tools,.url-input{display:none !important;}
+    .toolbar,.toast,.sec-tools,.edit-only,.block-edit-only,.del-btn,.work-tools,.url-input,.modal{display:none !important;}
   }
 </style>
 </head>
@@ -368,7 +425,7 @@
     <div class="sec-head">
       <span class="sec-num mono">02 /</span>
       <span class="sec-title" data-editable>Vibe Coding 作品</span>
-      <span class="sec-hint" data-editable>截图 + 一句话 + AI 工作流标签 + 链接</span>
+      <span class="sec-hint" data-editable>点击卡片查看详情 · 详情内容全可编辑</span>
     </div>
     <div class="works" id="worksGrid">
       <div class="work">
@@ -386,6 +443,31 @@
             <button class="chip-add edit-only">+</button>
           </div>
           <a class="work-link mono" href="https://github.com" target="_blank" rel="noopener"><span data-editable>GitHub ↗</span></a>
+          <span class="work-detail-link">查看详情 →</span>
+        </div>
+        <div class="work-detail">
+          <div class="wd-block">
+            <button class="del-btn" title="删除板块">×</button>
+            <span class="wd-tools"><button data-dir="-1" title="上移">‹</button><button data-dir="1" title="下移">›</button></span>
+            <h3 data-editable>背景与场景</h3>
+            <div class="wd-text" data-editable>这个作品面向什么场景？遇到了什么具体问题？为什么值得花时间做？</div>
+            <div class="wd-imgs"><button class="wd-add-img edit-only">+ 添加截图</button></div>
+          </div>
+          <div class="wd-block">
+            <button class="del-btn" title="删除板块">×</button>
+            <span class="wd-tools"><button data-dir="-1" title="上移">‹</button><button data-dir="1" title="下移">›</button></span>
+            <h3 data-editable>解决过程</h3>
+            <div class="wd-text" data-editable>技术选型与关键实现写在这里。可以展开讲 AI 工作流：用了什么工具、怎么分工、迭代了几轮、踩过什么坑。</div>
+            <div class="wd-imgs"><button class="wd-add-img edit-only">+ 添加截图</button></div>
+          </div>
+          <div class="wd-block">
+            <button class="del-btn" title="删除板块">×</button>
+            <span class="wd-tools"><button data-dir="-1" title="上移">‹</button><button data-dir="1" title="下移">›</button></span>
+            <h3 data-editable>结果与收获</h3>
+            <div class="wd-text" data-editable>量化结果（使用量 / 性能 / 节省时间等），以及这个作品让你学到的东西。</div>
+            <div class="wd-imgs"><button class="wd-add-img edit-only">+ 添加截图</button></div>
+          </div>
+          <button class="wd-add-block edit-only">+ 添加板块</button>
         </div>
       </div>
       <div class="work">
@@ -403,6 +485,31 @@
             <button class="chip-add edit-only">+</button>
           </div>
           <a class="work-link mono" href="https://github.com" target="_blank" rel="noopener"><span data-editable>GitHub ↗</span></a>
+          <span class="work-detail-link">查看详情 →</span>
+        </div>
+        <div class="work-detail">
+          <div class="wd-block">
+            <button class="del-btn" title="删除板块">×</button>
+            <span class="wd-tools"><button data-dir="-1" title="上移">‹</button><button data-dir="1" title="下移">›</button></span>
+            <h3 data-editable>背景与场景</h3>
+            <div class="wd-text" data-editable>这个作品面向什么场景？遇到了什么具体问题？为什么值得花时间做？</div>
+            <div class="wd-imgs"><button class="wd-add-img edit-only">+ 添加截图</button></div>
+          </div>
+          <div class="wd-block">
+            <button class="del-btn" title="删除板块">×</button>
+            <span class="wd-tools"><button data-dir="-1" title="上移">‹</button><button data-dir="1" title="下移">›</button></span>
+            <h3 data-editable>解决过程</h3>
+            <div class="wd-text" data-editable>技术选型与关键实现写在这里。可以展开讲 AI 工作流：用了什么工具、怎么分工、迭代了几轮、踩过什么坑。</div>
+            <div class="wd-imgs"><button class="wd-add-img edit-only">+ 添加截图</button></div>
+          </div>
+          <div class="wd-block">
+            <button class="del-btn" title="删除板块">×</button>
+            <span class="wd-tools"><button data-dir="-1" title="上移">‹</button><button data-dir="1" title="下移">›</button></span>
+            <h3 data-editable>结果与收获</h3>
+            <div class="wd-text" data-editable>量化结果（使用量 / 性能 / 节省时间等），以及这个作品让你学到的东西。</div>
+            <div class="wd-imgs"><button class="wd-add-img edit-only">+ 添加截图</button></div>
+          </div>
+          <button class="wd-add-block edit-only">+ 添加板块</button>
         </div>
       </div>
       <div class="work">
@@ -420,6 +527,31 @@
             <button class="chip-add edit-only">+</button>
           </div>
           <a class="work-link mono" href="https://github.com" target="_blank" rel="noopener"><span data-editable>GitHub ↗</span></a>
+          <span class="work-detail-link">查看详情 →</span>
+        </div>
+        <div class="work-detail">
+          <div class="wd-block">
+            <button class="del-btn" title="删除板块">×</button>
+            <span class="wd-tools"><button data-dir="-1" title="上移">‹</button><button data-dir="1" title="下移">›</button></span>
+            <h3 data-editable>背景与场景</h3>
+            <div class="wd-text" data-editable>这个作品面向什么场景？遇到了什么具体问题？为什么值得花时间做？</div>
+            <div class="wd-imgs"><button class="wd-add-img edit-only">+ 添加截图</button></div>
+          </div>
+          <div class="wd-block">
+            <button class="del-btn" title="删除板块">×</button>
+            <span class="wd-tools"><button data-dir="-1" title="上移">‹</button><button data-dir="1" title="下移">›</button></span>
+            <h3 data-editable>解决过程</h3>
+            <div class="wd-text" data-editable>技术选型与关键实现写在这里。可以展开讲 AI 工作流：用了什么工具、怎么分工、迭代了几轮、踩过什么坑。</div>
+            <div class="wd-imgs"><button class="wd-add-img edit-only">+ 添加截图</button></div>
+          </div>
+          <div class="wd-block">
+            <button class="del-btn" title="删除板块">×</button>
+            <span class="wd-tools"><button data-dir="-1" title="上移">‹</button><button data-dir="1" title="下移">›</button></span>
+            <h3 data-editable>结果与收获</h3>
+            <div class="wd-text" data-editable>量化结果（使用量 / 性能 / 节省时间等），以及这个作品让你学到的东西。</div>
+            <div class="wd-imgs"><button class="wd-add-img edit-only">+ 添加截图</button></div>
+          </div>
+          <button class="wd-add-block edit-only">+ 添加板块</button>
         </div>
       </div>
       <div class="work placeholder">
@@ -458,6 +590,18 @@
   </footer>
 
 </div>
+</div>
+
+<!-- ===== 作品详情弹层 ===== -->
+<div class="modal" id="workModal">
+  <div class="modal-mask" id="modalMask"></div>
+  <div class="modal-panel">
+    <div class="modal-head">
+      <span class="modal-title" id="modalTitle">作品详情</span>
+      <button class="modal-close" id="modalClose" title="关闭">×</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
 </div>
 
 <!-- ===== 编辑工具栏 ===== -->
@@ -617,12 +761,54 @@
     if(t.closest('a')){ e.preventDefault(); }
   });
 
+  /* 打开作品详情（浏览模式点卡片任意处；编辑模式点「查看详情 →」） */
+  app.addEventListener('click', function(e){
+    var dl = e.target.closest ? e.target.closest('.work-detail-link') : null;
+    if(dl){
+      e.preventDefault();
+      openWorkModal(dl.closest('.work'));
+      return;
+    }
+    if(editing) return;
+    var t = e.target;
+    if(t.closest && t.closest('a')) return; // 正常链接跳转不拦截
+    var w = t.closest ? t.closest('.work') : null;
+    if(w && !w.classList.contains('placeholder') && w.querySelector(':scope > .work-detail')){
+      openWorkModal(w);
+    }
+  });
+
   function makeChip(text){
     var chip = document.createElement('span');
     chip.className = 'chip mono';
     chip.innerHTML = '<span data-editable></span><button class="del-btn" title="删除">×</button>';
     chip.querySelector('[data-editable]').textContent = text;
     return chip;
+  }
+  function makeWdBlock(title, text){
+    var b = document.createElement('div');
+    b.className = 'wd-block';
+    b.innerHTML =
+      '<button class="del-btn" title="删除板块">×</button>' +
+      '<span class="wd-tools"><button data-dir="-1" title="上移">‹</button><button data-dir="1" title="下移">›</button></span>' +
+      '<h3 data-editable></h3>' +
+      '<div class="wd-text" data-editable></div>' +
+      '<div class="wd-imgs"><button class="wd-add-img edit-only">+ 添加截图</button></div>';
+    b.querySelector('h3').textContent = title;
+    b.querySelector('.wd-text').textContent = text;
+    return b;
+  }
+  function buildDetail(){
+    var det = document.createElement('div');
+    det.className = 'work-detail';
+    det.appendChild(makeWdBlock('背景与场景', '这个作品面向什么场景？遇到了什么具体问题？为什么值得花时间做？'));
+    det.appendChild(makeWdBlock('解决过程', '技术选型与关键实现写在这里。可以展开讲 AI 工作流：用了什么工具、怎么分工、迭代了几轮、踩过什么坑。'));
+    det.appendChild(makeWdBlock('结果与收获', '量化结果（使用量 / 性能 / 节省时间等），以及这个作品让你学到的东西。'));
+    var add = document.createElement('button');
+    add.className = 'wd-add-block edit-only';
+    add.textContent = '+ 添加板块';
+    det.appendChild(add);
+    return det;
   }
   function makeWork(){
     var d = document.createElement('div');
@@ -636,7 +822,9 @@
       '<div class="work-desc" data-editable>一句话介绍这个作品</div>' +
       '<div class="work-tags"><span class="chip mono"><span data-editable>标签</span><button class="del-btn" title="删除">×</button></span><button class="chip-add edit-only">+</button></div>' +
       '<a class="work-link mono" href="https://github.com" target="_blank" rel="noopener"><span data-editable>GitHub ↗</span></a>' +
+      '<span class="work-detail-link">查看详情 →</span>' +
       '</div>';
+    d.appendChild(buildDetail());
     return d;
   }
   function makeExp(){
@@ -731,22 +919,127 @@
   fileInput.style.display = 'none';
   document.body.appendChild(fileInput);
   var thumbTarget = null;
+  var pickMode = 'replace';
   fileInput.addEventListener('change', function(){
     var f = fileInput.files && fileInput.files[0];
     fileInput.value = '';
     if(!f || !thumbTarget) return;
     if(f.size > 2 * 1024 * 1024){ toast('图片超过 2MB，请压缩后再试'); return; }
+    var target = thumbTarget, mode = pickMode;
     var reader = new FileReader();
     reader.onload = function(){
-      thumbTarget.innerHTML = '<img src="' + reader.result + '" alt="作品截图">';
-      scheduleSave(); toast('图片已更新');
+      if(mode === 'append'){
+        var d = document.createElement('div');
+        d.className = 'wd-img';
+        d.innerHTML = '<img src="' + reader.result + '" alt="详情截图"><button class="del-btn" title="删除图片">×</button>';
+        var addBtn = target.querySelector('.wd-add-img');
+        if(addBtn){ target.insertBefore(d, addBtn); } else { target.appendChild(d); }
+      } else {
+        target.innerHTML = '<img src="' + reader.result + '" alt="作品截图">';
+      }
+      if(currentDetail && modalBody.contains(target)){ syncBack(); } else { scheduleSave(); }
+      toast('图片已更新');
     };
     reader.readAsDataURL(f);
   });
-  function pickImage(th){
-    thumbTarget = th;
+  function pickImage(el, mode){
+    thumbTarget = el;
+    pickMode = mode || 'replace';
     fileInput.click();
   }
+
+  /* ---------- 作品详情弹层 ---------- */
+  var modal = document.getElementById('workModal');
+  var modalBody = document.getElementById('modalBody');
+  var modalTitle = document.getElementById('modalTitle');
+  var currentDetail = null;
+
+  function openWorkModal(card){
+    if(!card) return;
+    var detail = card.querySelector(':scope > .work-detail');
+    if(!detail) return;
+    currentDetail = detail;
+    modalBody.innerHTML = detail.innerHTML;
+    var titleEl = card.querySelector('.work-title');
+    modalTitle.textContent = titleEl ? titleEl.textContent.trim() : '作品详情';
+    if(editing){
+      modalBody.querySelectorAll('[data-editable]').forEach(function(el){
+        el.setAttribute('contenteditable', 'true');
+        el.setAttribute('spellcheck', 'false');
+      });
+    }
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function syncBack(){
+    if(currentDetail){
+      currentDetail.innerHTML = modalBody.innerHTML;
+      scheduleSave();
+    }
+  }
+  function closeModal(){
+    if(!modal.classList.contains('open')) return;
+    syncBack();
+    modal.classList.remove('open');
+    modalBody.innerHTML = '';
+    currentDetail = null;
+    document.body.style.overflow = '';
+  }
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  document.getElementById('modalMask').addEventListener('click', closeModal);
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeModal();
+  });
+  modalBody.addEventListener('input', function(){ if(editing) syncBack(); });
+
+  /* 弹层内编辑操作：板块排序 / 删除 / 添加板块 / 插图换图 */
+  modalBody.addEventListener('click', function(e){
+    if(!editing) return;
+    var t = e.target;
+    var mv = t.closest ? t.closest('.wd-tools button') : null;
+    if(mv){
+      e.preventDefault();
+      var blk = mv.closest('.wd-block');
+      var dir = parseInt(mv.getAttribute('data-dir'), 10);
+      var sib = dir < 0 ? blk.previousElementSibling : blk.nextElementSibling;
+      while(sib && !(sib.classList && sib.classList.contains('wd-block'))){
+        sib = dir < 0 ? sib.previousElementSibling : sib.nextElementSibling;
+      }
+      if(!sib){ toast(dir < 0 ? '已经在最前了' : '已经在最后了'); return; }
+      if(dir < 0){ modalBody.insertBefore(blk, sib); } else { modalBody.insertBefore(sib, blk); }
+      syncBack();
+      return;
+    }
+    if(t.classList && t.classList.contains('del-btn')){
+      e.preventDefault();
+      var host = t.closest('.wd-img') || t.closest('.wd-block');
+      if(host){ host.remove(); syncBack(); toast('已删除'); }
+      return;
+    }
+    if(t.classList && t.classList.contains('wd-add-block')){
+      e.preventDefault();
+      var nb = makeWdBlock('新板块', '板块内容写在这里。');
+      modalBody.insertBefore(nb, t);
+      nb.querySelectorAll('[data-editable]').forEach(function(el){
+        el.setAttribute('contenteditable', 'true');
+        el.setAttribute('spellcheck', 'false');
+      });
+      syncBack();
+      editFocus(nb.querySelector('h3'));
+      return;
+    }
+    if(t.classList && t.classList.contains('wd-add-img')){
+      e.preventDefault();
+      pickImage(t.parentNode, 'append');
+      return;
+    }
+    var wi = t.closest ? t.closest('.wd-img') : null;
+    if(wi){
+      e.preventDefault();
+      pickImage(wi, 'replace');
+      return;
+    }
+  });
   /* 旧版本存档升级：补齐新增控件 */
   function upgradeDom(){
     app.querySelectorAll('.skill-group').forEach(function(g){
@@ -763,6 +1056,18 @@
         s.innerHTML = '<button data-dir="-1" title="左移">‹</button><button data-dir="1" title="右移">›</button>';
         var del = w.querySelector(':scope > .del-btn');
         w.insertBefore(s, del ? del.nextSibling : w.firstChild);
+      }
+      if(!w.classList.contains('placeholder')){
+        var wb = w.querySelector('.work-body');
+        if(wb && !wb.querySelector('.work-detail-link')){
+          var dl = document.createElement('span');
+          dl.className = 'work-detail-link';
+          dl.textContent = '查看详情 →';
+          wb.appendChild(dl);
+        }
+        if(!w.querySelector(':scope > .work-detail')){
+          w.appendChild(buildDetail());
+        }
       }
     });
     var ph = app.querySelector('.work.placeholder');
@@ -899,11 +1204,12 @@
 
   /* ---------- 导出 HTML ---------- */
   document.getElementById('exportBtn').addEventListener('click', function(){
+    closeModal();
     save();
     var clone = document.documentElement.cloneNode(true);
     // 移除编辑态
     clone.querySelectorAll('[contenteditable]').forEach(function(el){ el.removeAttribute('contenteditable'); });
-    clone.querySelectorAll('.del-btn, .sec-tools, .chip-add, #addWorkBtn, #addExpBtn, #addGroupBtn, .toast, .link-edit, .url-input, .work-tools, .work.placeholder').forEach(function(el){ el.remove(); });
+    clone.querySelectorAll('.del-btn, .sec-tools, .chip-add, #addWorkBtn, #addExpBtn, #addGroupBtn, .toast, .link-edit, .url-input, .work-tools, .work.placeholder, .wd-tools, .wd-add-block, .wd-add-img').forEach(function(el){ el.remove(); });
     clone.querySelectorAll('section.section-hidden').forEach(function(el){ el.remove(); });
     var body = clone.querySelector('body');
     if(body) body.classList.remove('editing');
